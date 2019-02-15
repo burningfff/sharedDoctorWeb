@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 
 const Register = resolve => require(['../components/Register/register.vue'], resolve)
 const HelloWorld = resolve => require(['../components/HelloWorld.vue'], resolve)
+const Login = resolve => require(['../components/Login/login.vue'], resolve)
 
 
 Vue.use(Router)
@@ -19,12 +20,12 @@ const routes = [
     path: '/register',
     component: Register,
     name: 'register'
-  }
-  // {
-  //   path: '/login',
-  //   component: Login,
-  //   name: 'login'
-  // },
+  },
+  {
+    path: '/login',
+    component: Login,
+    name: 'login'
+  },
   // {
   //   path: '/student/index',
   //   component: studentIndex,

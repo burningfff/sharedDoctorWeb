@@ -3,7 +3,7 @@ export default class AllService {
     this.host = process.env.testHost
     this.fileHost = process.env.fileHost
     this.method = {
-      // signIn: '/user/signIn',
+      signIn: '/user/signIn',
       signUp: '/user/signUp',
       // getOrderDetailByStudentId: '/order/findByStudentId',
       // getOrderDetailByTeacherId: '/order/findByTeacherId',
@@ -115,15 +115,15 @@ export default class AllService {
     return result
   }
 
-  // signIn(params, callback) {
-  //   var url = this.host + this.method.signIn;
-  //   var type = 'post';
-  //   return this.bizRequest(url, params, type, function(isOk, data) {
-  //     if (callback) {
-  //       callback(isOk, data);
-  //     }
-  //   }, "application/json");
-  // }
+  signIn(params, callback) {
+    var url = this.host + this.method.signIn;
+    var type = 'post';
+    return this.bizRequest(url, params, type, function(isOk, data) {
+      if (callback) {
+        callback(isOk, data);
+      }
+    }, "application/json");
+  }
 
   signUp(params, callback) {
     var url = this.host + this.method.signUp;

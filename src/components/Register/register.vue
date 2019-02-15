@@ -103,7 +103,6 @@
           checkPass: '',
           identity: ''
         },
-        departTable: [],
         rules2: {
           username: [
             { validator: checkUsername, trigger: 'blur' },
