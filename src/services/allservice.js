@@ -5,44 +5,44 @@ export default class AllService {
     this.method = {
       signIn: '/user/signIn',
       signUp: '/user/signUp',
-      // getOrderDetailByStudentId: '/order/findByStudentId',
-      // getOrderDetailByTeacherId: '/order/findByTeacherId',
+      // getOrderDetailByPatientId: '/order/findByPatientId',
+      // getOrderDetailByDoctorId: '/order/findByDoctorId',
       // getTimeSlotDetail: '/timeSlot/find',
-      // getTimeSlotByTeacherId: '/timeSlot/findByTeacherId',
+      // getTimeSlotByDoctorId: '/timeSlot/findByDoctorId',
       // deleteOrder: '/order/delete',
       // addTimeSlot: '/timeslot/add',
       // deleteTimeSlotById: '/timeSlot/delete',
-      // getTeacherTable: '/teacher/findAllTeacher',
+      // getDoctorTable: '/doctor/findAllDoctor',
       // addOrder: '/order/add',
       // addMessage: '/message/add',
       // deleteMessage: '/message/delete',
-      // getTeacherByName: '/teacher/findTeacherByName',
-      // getAllDepart: '/depart/findAll',
+      // getDoctorByName: '/doctor/findDoctorByName',
+      getAllDepart: '/depart/findAll',
       // getAllMessage: '/message/findAll',
-      // updateStudent:'/student/updateAll',
-      // updateTeacher:'/teacher/updateAll',
+      updatePatient:'/patient/updateAll',
+      updateDoctorAllData:'/doctor/updateDoctorAllData',
       // updatePassword:'/user/changePassword',
       // getUserInfo:'/user/findByUserId',
-      // getStudentDetailBN: '/student/findStudentByName',
-      // getTeacherDetailBN: '/teacher/findTeacherByName',
-      // updateStudentImage: '/student/updateImage',
-      // updateTeacherImage: '/teacher/updateImage',
-      // getStudentDetailById: '/student/findStudentById',
-      // getTeacherDetailById: '/teacher/findTeacherById',
-      // blurSearchTeacher: '/teacher/findTeacherVague',
-      // searchTeacherByDepart: '/teacher/findTeacherByDepart',
+      getPatientDetailByName: '/patient/findPatientByName',
+      getDoctorDetailByName: '/doctor/findDoctorByName',
+      // updatePatientImage: '/patient/updateImage',
+      // updateDoctorImage: '/doctor/updateImage',
+      // getPatientDetailById: '/patient/findPatientById',
+      // getDoctorDetailById: '/doctor/findDoctorById',
+      // blurSearchDoctor: '/doctor/findDoctorVague',
+      searchDoctorByDepart: '/doctor/findDoctorByDepart',
       // checkUserName: '/user/checkUserName',
-      // getAllStudent: '/student/findAll',
-      // deleteStudentByDepart: '/student/deleteByDepart',
-      // deleteAllStudent: '/student/deleteAll',
-      // searchStudentByDepart: '/student/findStudentByDepart',
-      // deleteStudentById: '/student/deleteStudent',
-      // addStudent: '/student/addStudent',
-      // getAllTeacher: '/teacher/findAllTeacher',
-      // deleteAllTeacher: '/teacher/deleteAll',
-      // deleteTeacherByDepart: '/teacher/deleteByDepart',
-      // addTeacher: '/teacher/addTeacher',
-      // deleteTeacherById: '/teacher/deleteTeacher',
+      getAllPatient: '/patient/findAllPatient',
+      // deletePatientByDepart: '/patient/deleteByDepart',
+      // deleteAllPatient: '/patient/deleteAll',
+      // searchPatientByDepart: '/patient/findPatientByDepart',
+      // deletePatientById: '/patient/deletePatient',
+      // addPatient: '/patient/addPatient',
+      getAllDoctor: '/doctor/findAllDoctor',
+      deleteAllDoctor: '/doctor/deleteAll',
+      deleteDoctorByDepart: '/doctor/deleteByDepart',
+      addDoctor: '/doctor/addDoctor',
+      // deleteDoctorById: '/doctor/deleteDoctor',
       //
       // getAllOrder: '/order/findAllOrder',
       // // deleteAllOrder: '',
@@ -135,8 +135,8 @@ export default class AllService {
     }, "application/json");
   }
 
-//   getOrderDetailByStudentId(params, callback){
-//     var url = this.host + this.method.getOrderDetailByStudentId;
+//   getOrderDetailByPatientId(params, callback){
+//     var url = this.host + this.method.getOrderDetailByPatientId;
 //     var type = 'post';
 //     return this.bizRequest(url, params, type, function(isOk, data) {
 //       if (callback) {
@@ -145,8 +145,8 @@ export default class AllService {
 //     }, "application/json");
 //   }
 //
-//   getOrderDetailByTeacherId(params, callback){
-//     var url = this.host + this.method.getOrderDetailByTeacherId;
+//   getOrderDetailByDoctorId(params, callback){
+//     var url = this.host + this.method.getOrderDetailByDoctorId;
 //     var type = 'post';
 //     return this.bizRequest(url, params, type, function(isOk, data) {
 //       if (callback) {
@@ -163,8 +163,8 @@ export default class AllService {
 //       }
 //     }, "application/json");
 //   }
-//   getTimeSlotByTeacherId(params, callback){
-//     var url = this.host + this.method.getTimeSlotByTeacherId;
+//   getTimeSlotByDoctorId(params, callback){
+//     var url = this.host + this.method.getTimeSlotByDoctorId;
 //     var type = 'post';
 //     return this.bizRequest(url, params, type, function(isOk, data) {
 //       if (callback) {
@@ -199,8 +199,8 @@ export default class AllService {
 //       }
 //     }, "application/json");
 //   }
-//   getTeacherTable(params,callback){
-//     var url = this.host + this.method.getTeacherTable;
+//   getDoctorTable(params,callback){
+//     var url = this.host + this.method.getDoctorTable;
 //     var type = 'post';
 //     return this.bizRequest(url, params, type, function(isOk, data) {
 //       if (callback) {
@@ -244,24 +244,16 @@ export default class AllService {
 //       }
 //     }, "application/json");
 //   }
-//   updateStudent(params,callback){
-//     var url = this.host + this.method.updateStudent;
-//     var type = 'post';
-//     return this.bizRequest(url, params, type, function(isOk, data) {
-//       if (callback) {
-//         callback(isOk, data);
-//       }
-//     }, "application/json");
-//   }
-//   updateTeacher(params,callback){
-//     var url = this.host + this.method.updateTeacher;
-//     var type = 'post';
-//     return this.bizRequest(url, params, type, function(isOk, data) {
-//       if (callback) {
-//         callback(isOk, data);
-//       }
-//     }, "application/json");
-//   }
+
+  updateDoctorAllData(params,callback){
+    var url = this.host + this.method.updateDoctorAllData;
+    var type = 'post';
+    return this.bizRequest(url, params, type, function(isOk, data) {
+      if (callback) {
+        callback(isOk, data);
+      }
+    }, "application/json");
+  }
 //
 //   getUserInfo(params,callback){
 //     var url = this.host + this.method.getUserInfo;
@@ -272,8 +264,8 @@ export default class AllService {
 //       }
 //     }, "application/json");
 //   }
-//   updateStudentImage(params,callback){
-//     var url = this.host + this.method.updateStudentImage;
+//   updatePatientImage(params,callback){
+//     var url = this.host + this.method.updatePatientImage;
 //     var type = 'post';
 //     return this.bizRequest(url, params, type, function(isOk, data) {
 //       if (callback) {
@@ -281,8 +273,8 @@ export default class AllService {
 //       }
 //     }, "application/json");
 //   }
-//   updateTeacherImage(params,callback){
-//     var url = this.host + this.method.updateTeacherImage;
+//   updateDoctorImage(params,callback){
+//     var url = this.host + this.method.updateDoctorImage;
 //     var type = 'post';
 //     return this.bizRequest(url, params, type, function(isOk, data) {
 //       if (callback) {
@@ -290,8 +282,8 @@ export default class AllService {
 //       }
 //     }, "application/json");
 //   }
-//   getTeacherByName(params,callback){
-//     var url = this.host + this.method.getTeacherByName;
+//   getDoctorByName(params,callback){
+//     var url = this.host + this.method.getDoctorByName;
 //     var type = 'post';
 //     return this.bizRequest(url, params, type, function(isOk, data) {
 //       if (callback) {
@@ -299,8 +291,8 @@ export default class AllService {
 //       }
 //     }, "application/json");
 //   }
-//   blurSearchTeacher(params,callback){
-//     var url = this.host + this.method.blurSearchTeacher;
+//   blurSearchDoctor(params,callback){
+//     var url = this.host + this.method.blurSearchDoctor;
 //     var type = 'post';
 //     return this.bizRequest(url, params, type, function(isOk, data) {
 //       if (callback) {
@@ -308,44 +300,49 @@ export default class AllService {
 //       }
 //     }, "application/json");
 //   }
-//   searchTeacherByDepart(params,callback){
-//     var url = this.host + this.method.searchTeacherByDepart;
-//     var type = 'post';
-//     return this.bizRequest(url, params, type, function(isOk, data) {
-//       if (callback) {
-//         callback(isOk, data);
-//       }
-//     }, "application/json");
-//   }
-//   getAllDepart(params,callback){
-//     var url = this.host + this.method.getAllDepart;
-//     var type = 'post';
-//     return this.bizRequest(url, params, type, function(isOk, data) {
-//       if (callback) {
-//         callback(isOk, data);
-//       }
-//     }, "application/json");
-//   }
-//   getStudentDetailBN(params,callback){
-//     var url = this.host + this.method.getStudentDetailBN;
-//     var type = 'post';
-//     return this.bizRequest(url, params, type, function(isOk, data) {
-//       if (callback) {
-//         callback(isOk, data);
-//       }
-//     }, "application/json");
-//   }
-//   getTeacherDetailBN(params,callback){
-//     var url = this.host + this.method.getTeacherDetailBN;
-//     var type = 'post';
-//     return this.bizRequest(url, params, type, function(isOk, data) {
-//       if (callback) {
-//         callback(isOk, data);
-//       }
-//     }, "application/json");
-//   }
-//   getStudentDetailById(params,callback){
-//     var url = this.host + this.method.getStudentDetailById;
+
+  searchDoctorByDepart(params,callback){
+    var url = this.host + this.method.searchDoctorByDepart;
+    var type = 'post';
+    return this.bizRequest(url, params, type, function(isOk, data) {
+      if (callback) {
+        callback(isOk, data);
+      }
+    }, "application/json");
+  }
+
+  getAllDepart(params,callback){
+    var url = this.host + this.method.getAllDepart;
+    var type = 'post';
+    return this.bizRequest(url, params, type, function(isOk, data) {
+      if (callback) {
+        callback(isOk, data);
+      }
+    }, "application/json");
+  }
+
+  getPatientDetailByName(params,callback){
+    var url = this.host + this.method.getPatientDetailByName;
+    var type = 'post';
+    return this.bizRequest(url, params, type, function(isOk, data) {
+      if (callback) {
+        callback(isOk, data);
+      }
+    }, "application/json");
+  }
+
+  getDoctorDetailByName(params,callback){
+    var url = this.host + this.method.getDoctorDetailByName;
+    var type = 'post';
+    return this.bizRequest(url, params, type, function(isOk, data) {
+      if (callback) {
+        callback(isOk, data);
+      }
+    }, "application/json");
+  }
+
+  //   getPatientDetailById(params,callback){
+//     var url = this.host + this.method.getPatientDetailById;
 //     var type = 'post';
 //     return this.bizRequest(url, params, type, function(isOk, data) {
 //       if (callback) {
@@ -362,8 +359,8 @@ export default class AllService {
 //       }
 //     }, "application/json");
 //   }
-//   getTeacherDetailById(params,callback){
-//     var url = this.host + this.method.getTeacherDetailById;
+//   getDoctorDetailById(params,callback){
+//     var url = this.host + this.method.getDoctorDetailById;
 //     var type = 'post';
 //     return this.bizRequest(url, params, type, function(isOk, data) {
 //       if (callback) {
@@ -380,8 +377,19 @@ export default class AllService {
 //       }
 //     }, "application/json");
 //   }
-//   getAllStudent(params,callback){
-//     var url = this.host + this.method.getAllStudent;
+
+  getAllPatient(params,callback){
+    var url = this.host + this.method.getAllPatient;
+    var type = 'post';
+    return this.bizRequest(url, params, type, function(isOk, data) {
+      if (callback) {
+        callback(isOk, data);
+      }
+    }, "application/json");
+  }
+
+//   deletePatientByDepart(params,callback){
+//     var url = this.host + this.method.deletePatientByDepart;
 //     var type = 'post';
 //     return this.bizRequest(url, params, type, function(isOk, data) {
 //       if (callback) {
@@ -389,8 +397,8 @@ export default class AllService {
 //       }
 //     }, "application/json");
 //   }
-//   deleteStudentByDepart(params,callback){
-//     var url = this.host + this.method.deleteStudentByDepart;
+//   deleteAllPatient(params,callback){
+//     var url = this.host + this.method.deleteAllPatient;
 //     var type = 'post';
 //     return this.bizRequest(url, params, type, function(isOk, data) {
 //       if (callback) {
@@ -398,8 +406,8 @@ export default class AllService {
 //       }
 //     }, "application/json");
 //   }
-//   deleteAllStudent(params,callback){
-//     var url = this.host + this.method.deleteAllStudent;
+//   searchPatientByDepart(params,callback){
+//     var url = this.host + this.method.searchPatientByDepart;
 //     var type = 'post';
 //     return this.bizRequest(url, params, type, function(isOk, data) {
 //       if (callback) {
@@ -407,8 +415,8 @@ export default class AllService {
 //       }
 //     }, "application/json");
 //   }
-//   searchStudentByDepart(params,callback){
-//     var url = this.host + this.method.searchStudentByDepart;
+//   deletePatientById(params,callback){
+//     var url = this.host + this.method.deletePatientById;
 //     var type = 'post';
 //     return this.bizRequest(url, params, type, function(isOk, data) {
 //       if (callback) {
@@ -416,8 +424,8 @@ export default class AllService {
 //       }
 //     }, "application/json");
 //   }
-//   deleteStudentById(params,callback){
-//     var url = this.host + this.method.deleteStudentById;
+//   addPatient(params,callback){
+//     var url = this.host + this.method.addPatient;
 //     var type = 'post';
 //     return this.bizRequest(url, params, type, function(isOk, data) {
 //       if (callback) {
@@ -425,54 +433,49 @@ export default class AllService {
 //       }
 //     }, "application/json");
 //   }
-//   addStudent(params,callback){
-//     var url = this.host + this.method.addStudent;
-//     var type = 'post';
-//     return this.bizRequest(url, params, type, function(isOk, data) {
-//       if (callback) {
-//         callback(isOk, data);
-//       }
-//     }, "application/json");
-//   }
-//   getAllTeacher(params,callback){
-//     var url = this.host + this.method.getAllTeacher;
-//     var type = 'post';
-//     return this.bizRequest(url, params, type, function(isOk, data) {
-//       if (callback) {
-//         callback(isOk, data);
-//       }
-//     }, "application/json");
-//   }
-//   deleteAllTeacher(params,callback){
-//     var url = this.host + this.method.deleteAllTeacher;
-//     var type = 'post';
-//     return this.bizRequest(url, params, type, function(isOk, data) {
-//       if (callback) {
-//         callback(isOk, data);
-//       }
-//     }, "application/json");
-//   }
-//   deleteTeacherByDepart(params,callback){
-//     var url = this.host + this.method.deleteTeacherByDepart;
-//     var type = 'post';
-//     return this.bizRequest(url, params, type, function(isOk, data) {
-//       if (callback) {
-//         callback(isOk, data);
-//       }
-//     }, "application/json");
-//   }
-//   addTeacher(params,callback){
-//     var url = this.host + this.method.addTeacher;
-//     var type = 'post';
-//     return this.bizRequest(url, params, type, function(isOk, data) {
-//       if (callback) {
-//         callback(isOk, data);
-//       }
-//     }, "application/json");
-//   }
+
+  getAllDoctor(params,callback){
+    var url = this.host + this.method.getAllDoctor;
+    var type = 'post';
+    return this.bizRequest(url, params, type, function(isOk, data) {
+      if (callback) {
+        callback(isOk, data);
+      }
+    }, "application/json");
+  }
+
+  deleteAllDoctor(params,callback){
+    var url = this.host + this.method.deleteAllDoctor;
+    var type = 'post';
+    return this.bizRequest(url, params, type, function(isOk, data) {
+      if (callback) {
+        callback(isOk, data);
+      }
+    }, "application/json");
+  }
+  
+  deleteDoctorByDepart(params,callback){
+    var url = this.host + this.method.deleteDoctorByDepart;
+    var type = 'post';
+    return this.bizRequest(url, params, type, function(isOk, data) {
+      if (callback) {
+        callback(isOk, data);
+      }
+    }, "application/json");
+  }
+  
+    addDoctor(params,callback){
+    var url = this.host + this.method.addDoctor;
+    var type = 'post';
+    return this.bizRequest(url, params, type, function(isOk, data) {
+      if (callback) {
+        callback(isOk, data);
+      }
+    }, "application/json");
+  }
 //
-//   deleteTeacherById(params,callback){
-//     var url = this.host + this.method.deleteTeacherById;
+//   deleteDoctorById(params,callback){
+//     var url = this.host + this.method.deleteDoctorById;
 //     var type = 'post';
 //     return this.bizRequest(url, params, type, function(isOk, data) {
 //       if (callback) {

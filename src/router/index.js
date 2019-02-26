@@ -5,6 +5,7 @@ import Vuex from 'vuex'
 const Register = resolve => require(['../components/Register/register.vue'], resolve)
 const HelloWorld = resolve => require(['../components/HelloWorld.vue'], resolve)
 const Login = resolve => require(['../components/Login/login.vue'], resolve)
+const SuperUser = resolve => require(['../components/SuperUser/index.vue'], resolve)
 
 
 Vue.use(Router)
@@ -56,11 +57,11 @@ const routes = [
   //   component: changeTInfo,
   //   name: 'TInfo'
   // },
-  // {
-  //   path: '/SU/index',
-  //   component: SUindex,
-  //   name: 'SUindex'
-  // }
+  {
+    path: '/SuperUser/index',
+    component: SuperUser,
+    name: 'SuperUser'
+  }
 
 ]
 
