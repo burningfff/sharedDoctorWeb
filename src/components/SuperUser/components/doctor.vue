@@ -16,10 +16,10 @@
         <el-button @click="resetDoctorPage">重置</el-button>
       </el-col>
       <el-col :span="2" :offset="3">
-        <el-button type="primary" @click="showDialog('add')">新增</el-button>
+        <el-button type="primary" @click="showDialog('add')">新增医护人员</el-button>
       </el-col>
       <el-col :span="3" :offset="1">
-        <el-button type="danger" @click="showDialog('delete')">批量删除</el-button>
+        <el-button type="danger" @click="deleteDoctorBatch">删除所选医护人员</el-button>
       </el-col>
       <el-col :span="3" :offset="1">
         <el-upload
@@ -29,7 +29,7 @@
           :before-upload="beforeAvatarUpload"
           multiple
           :show-file-list="false">
-          <el-button type="primary">批量增加</el-button>
+          <el-button type="primary">批量新增医护人员</el-button>
         </el-upload>
       </el-col>
     </el-row>
@@ -37,12 +37,63 @@
       <el-table
         align="left"
         :data="doctorTable"
-        border
         stripe
         highlight-current-row
         style="width: fit-content;margin-top: 40px"
-        empty-text="暂无预约情况"
-        :default-sort="{prop: 'departId', order: 'ascending'}">
+        empty-text="暂无医护人员信息"
+        :default-sort="{prop: 'doctorId', order: 'ascending'}"
+        @selection-change="handleSelectionChange">
+        <el-table-column
+          type="selection"
+          width="50">
+        </el-table-column>
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" inline class="demo-table-expand">
+              <el-form-item label="医护人员 ID">
+                <span>{{ props.row.doctorId }}</span>
+              </el-form-item>
+              <el-form-item label="医护人员用户名">
+                <span>{{ props.row.user.userName }}</span>
+              </el-form-item>
+              <el-form-item label="医护人员姓名">
+                <span>{{ props.row.doctorName }}</span>
+              </el-form-item>
+              <el-form-item label="性别">
+                <span>{{ props.row.gender }}</span>
+              </el-form-item>
+              <el-form-item label="身份证号">
+                <span>{{ props.row.identityCard }}</span>
+              </el-form-item>
+              <el-form-item label="年龄">
+                <span>{{ props.row.age }}</span>
+              </el-form-item>
+              <el-form-item label="科室">
+                <span>{{ props.row.qualification.depart.departName }}</span>
+              </el-form-item>
+              <el-form-item label="职称">
+                <span>{{ props.row.qualification.position.positionName }}</span>
+              </el-form-item>
+              <el-form-item label="住址">
+                <span>{{ props.row.location.province+props.row.location.city+props.row.location.district+props.row.location.locationDetail}}</span>
+              </el-form-item>
+              <el-form-item label="手机号">
+                <span>{{ props.row.phone}}</span>
+              </el-form-item>
+              <el-form-item label="邮箱">
+                <span>{{ props.row.email}}</span>
+              </el-form-item>
+              <el-form-item label="余额">
+                <span>{{ props.row.balance.balance}}</span>
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="doctorId"
+          label="医护人员ID"
+          width="300">
+        </el-table-column>
         <el-table-column
           prop="user.userName"
           label="医护人员用户名"
@@ -56,32 +107,19 @@
           width="150">
         </el-table-column>
         <el-table-column
-          prop="departId"
-          label="科室"
+          prop="qualification.isConfirmed"
+          label="认证状态"
           width="150"
-          :formatter="departFormatter">
+          :formatter="confirmedFormatter">
         </el-table-column>
-        <el-table-column
-          prop="phone"
-          label="手机"
-          width="150">
-        </el-table-column>
-        <el-table-column
-          prop="email"
-          label="邮箱"
-          width="150">
-        </el-table-column>
-        <!--<el-table-column-->
-          <!--label="时间段"-->
-          <!--width="110">-->
-          <!--<template slot-scope="scope">-->
-            <!--<el-button type="plain" @click="showTimeSlot(scope.row)">详情</el-button>-->
-          <!--</template>-->
-        <!--</el-table-column>-->
         <el-table-column
           label="操作"
-          width="220">
+          width="360">
           <template slot-scope="scope">
+            <el-button
+              size="small"
+              type="plain"
+              @click="showQualifyDialog(scope.row)">认证信息</el-button>
             <el-button
               size="small"
               type="warning"
@@ -106,52 +144,82 @@
         style="margin-right: 0%;">
       </el-pagination>
     </el-row>
-    <!--批量删除-->
-    <el-dialog :title="'批量删除'" :visible.sync="dialogVisible.deleteVisible">
-      <el-form :model="selectDepart" label-width="100px">
-        <el-form-item label="指定科室" prop="depart">
-          <el-select v-model="selectDepart.depart" placeholder="请选择">
-            <el-option
-              v-for="item in departTable"
-              :key="item.departId"
-              :label="item.departName"
-              :value="item.departId">
-            </el-option>
-            <el-option key="-1" label="全部科室" value="-1"></el-option>
-          </el-select>
+    <!--认证信息-->
+    <el-dialog :title="'认证信息'" :visible.sync="dialogVisible.qualifySingleVisible" width="40%">
+      <el-form :model="qualificationDetail" label-width="30%">
+        <el-form-item label="医护人员姓名：" >
+          <span>{{this.qualificationDetail.doctorName}}</span>
+        </el-form-item>
+        <el-form-item label="性别：">
+          <span>{{ this.qualificationDetail.gender }}</span>
+        </el-form-item>
+        <el-form-item label="身份证号：">
+          <span>{{ this.qualificationDetail.identityCard }}</span>
+        </el-form-item>
+        <el-form-item label="科室：" >
+          <span>{{this.qualificationDetail.qualification.depart.departName}}</span>
+        </el-form-item>
+        <el-form-item label="职称：">
+          <span>{{ this.qualificationDetail.qualification.position.positionName }}</span>
+        </el-form-item>
+        <el-form-item label="所属医院：">
+          <span>{{ this.qualificationDetail.hospitalId }}</span>
+        </el-form-item>
+        <el-form-item label="医护人员资质照片：" prop="imageUrl">
+          <span>
+            <div class="img-div">
+              <img class="user-img" src="../../../assets/logo.png"/>
+            </div>
+          </span>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-          <el-button @click="closeDialog('delete')">取消</el-button>
-          <el-button @click="deleteDoctorBatch" type="primary">删除</el-button>
-        </span>
+        <el-button @click="updateDoctorAllData" type="primary">通过认证</el-button>
+        <el-button @click="closeDialog('qualify')">取消</el-button>
+      </span>
     </el-dialog>
     <!--修改信息-->
     <el-dialog :title="'修改信息'" :visible.sync="dialogVisible.modifySingleVisible" width="40%">
-      <el-form :model="doctorDetail" label-width="30%">
-        <el-form-item label="医护人员姓名" prop="doctorName">
+      <el-form :model="doctorDetail" label-width="25%" align="left">
+        <el-form-item label="医护人员姓名:" prop="doctorName">
           <span>{{doctorDetail.doctorName}}</span>
         </el-form-item>
-        <el-form-item label="科室" prop="departId">
-          <el-select v-model="doctorDetail.departId" placeholder="请选择">
+        <el-form-item label="性别:" prop="gender">
+          <el-select v-model="doctorDetail.gender" placeholder="请选择" style="width: 75%">
             <el-option
-              v-for="item in departTable"
-              :key="item.departId"
-              :label="item.departName"
-              :value="item.departId">
+              v-for="item in genderOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="手机" prop="phone">
-          <el-input v-model="doctorDetail.phone" style="width: 60%"></el-input>
+        <el-form-item label="身份证号:" prop="identityCard">
+          <el-input v-model="doctorDetail.identityCard" style="width: 75%"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="doctorDetail.email" style="width: 60%"></el-input>
+        <el-form-item label="年龄:" prop="age">
+          <el-input v-model="doctorDetail.age" style="width: 75%"></el-input>
+        </el-form-item>
+        <el-form-item label="手机:" prop="phone">
+          <el-input v-model="doctorDetail.phone" style="width: 75%"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱:" prop="email">
+          <el-input v-model="doctorDetail.email" style="width: 75%"></el-input>
+        </el-form-item>
+        <el-form-item label="地址:" prop="location">
+          <v-distpicker :province="location.province" :city="location.city" :area="location.area"></v-distpicker>
+          <el-input
+            type="textarea"
+            :rows="2"
+            placeholder="请输入详细地址"
+            style="width: 75%"
+            v-model="location.locationDetail">
+          </el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
           <el-button @click="closeDialog('modify')">取消</el-button>
-          <el-button @click="updateDoctorAllData" type="primary">确定</el-button>
+          <el-button @click="updatePatientDetail" type="primary">确定</el-button>
         </span>
     </el-dialog>
     <!--新增一个-->
@@ -199,25 +267,52 @@
 
 <script>
   import AllService from '../../../services/allservice.js'
+  import VDistpicker from 'v-distpicker'
 
   var allService = new AllService()
   export default {
+    components: { VDistpicker },
     data () {
       return {
+        multipleSelection: [],
+        location: {
+          province: '江苏省',
+          city: '苏州市',
+          area: '姑苏区',
+          locationDetail:'',
+        },
         doctorTable: [],
         doctorTableLength: 0,
         dialogVisible: {
-          deleteVisible: false,
           addVisible: false,
           addSingleVisible: false,
+          qualifySingleVisible: false,
           modifySingleVisible: false,
           deleteSingleVisible: false,
           timeSlotVisible: false
         },
+        qualificationDetail:{
+          qualificationId:'',
+          // doctorName: '',
+          qualification:{
+            depart:{
+              departId:'',
+              departName:'',
+            },
+            position:{
+              positionId:'',
+              positionName:'',
+            },
+          },
+          imageUrl:'',
+          positionId:'',
+          hospitalId:'',
+          isConfirmed:''
+        },
         doctorDetail: {
           doctorName: '',
           gender: '',
-          depart: '',
+          departId: '',
           phone: '',
           email: '',
           // deleteTimes: '',
@@ -225,7 +320,7 @@
         },
         doctorToAdd:{
           doctorName: '',
-          depart: '',
+          departId: '',
           phone: '',
           email: '',
           // deleteTimes: '',
@@ -233,14 +328,26 @@
         },
         timeSlotList: [],
         selectDepart: {
-          depart: '',
+          departId: '',
         },
         searchKey: '用户名',
         searchContent: '',
-
+        depart:{
+          departId:'',
+          departName:''
+        },
         departTable: [],
         currentPage: 1,
         pageSize: 10,
+        multipleSelection: [],
+        genderOptions:[{
+          value: '男',
+          label: '男'
+        },{
+          value: '女',
+          label: '女'
+        }],
+
       }
     },
     created () {
@@ -276,20 +383,19 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          if (this.selectDepart.depart == -1) {
-            allService.deleteAllDoctor({}, (isOk, data) => {
-              if (isOk) {
-                this.$message.success('删除成功！')
-                this.getDoctorTable()
-              }
-            })
-          }
-          else allService.deleteDoctorByDepart({departId: this.selectDepart.depart}, (isOk, data) => {
-            if (isOk) {
-              this.$message.success('删除成功！')
-              this.getDoctorTable()
+          console.log(this.multipleSelection)
+          if (this.multipleSelection.length==0){
+            this.$message.warning('未选择用户')
+          }else{
+            for(var i=0;i<this.multipleSelection.length;i++){
+              allService.deleteDoctorById({doctorId: this.multipleSelection[i].doctorId}, (isOk, data) => {
+                if (isOk) {
+                  this.getDoctorTable()
+                }
+              })
             }
-          })
+            this.$message.success('删除成功！')
+          }
           this.closeDialog('delete')
         })
       },
@@ -399,12 +505,17 @@
       },
 
       showDialog (arg) {
-        if (arg === 'delete') {
-          this.dialogVisible.deleteVisible = true
-        }
         if (arg === 'add') {
           this.dialogVisible.addSingleVisible = true
         }
+      },
+      showQualifyDialog(row) {
+        console.log(row)
+        this.qualificationDetail = JSON.parse(JSON.stringify(row))//deep copy
+        console.log('qualification')
+        console.log(this.qualificationDetail)
+        console.log(this.qualificationDetail.qualification.depart.departName)
+        this.dialogVisible.qualifySingleVisible = true
       },
       showModifyDialog (row) {
         console.log(row)
@@ -412,12 +523,11 @@
         this.dialogVisible.modifySingleVisible = true
       },
       closeDialog (arg) {
-        if (arg === 'delete') {
-          this.dialogVisible.deleteVisible = false
-          this.selectDepart.depart = ''
-        }
         if (arg === 'modify') {
           this.dialogVisible.modifySingleVisible = false
+        }
+        if (arg === 'qualify') {
+          this.dialogVisible.qualifySingleVisible = false
         }
         if(arg==='add'){
           this.dialogVisible.addSingleVisible = false
@@ -451,12 +561,12 @@
           }
         }
       },
-      // orderedFormatter(row){
-      //   console.log(row)
-      //   if(row.isOrdered===0){
-      //     return '未预约';
-      //   }else return '已预约';
-      // },
+      confirmedFormatter(row){
+        console.log(row)
+        if(row.qualification.isConfirmed===0){
+          return '未认证';
+        }else return '已认证';
+      },
       getDepartId (temp) {
         for (var i = 0; i < this.departTable.length; i++) {
           if (temp === this.departTable[i].departName) {
@@ -472,6 +582,9 @@
         this.pageSize = val
         this.search()
       },
+      handleSelectionChange(val) {
+        this.multipleSelection = val;
+      }
     }
   }
 </script>

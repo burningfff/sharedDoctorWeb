@@ -36,13 +36,13 @@ export default class AllService {
       // deletePatientByDepart: '/patient/deleteByDepart',
       // deleteAllPatient: '/patient/deleteAll',
       // searchPatientByDepart: '/patient/findPatientByDepart',
-      // deletePatientById: '/patient/deletePatient',
+      deletePatientById: '/patient/deletePatient',
       // addPatient: '/patient/addPatient',
       getAllDoctor: '/doctor/findAllDoctor',
       deleteAllDoctor: '/doctor/deleteAll',
       deleteDoctorByDepart: '/doctor/deleteByDepart',
       addDoctor: '/doctor/addDoctor',
-      // deleteDoctorById: '/doctor/deleteDoctor',
+      deleteDoctorById: '/doctor/deleteDoctor',
       //
       // getAllOrder: '/order/findAllOrder',
       // // deleteAllOrder: '',
@@ -415,15 +415,17 @@ export default class AllService {
 //       }
 //     }, "application/json");
 //   }
-//   deletePatientById(params,callback){
-//     var url = this.host + this.method.deletePatientById;
-//     var type = 'post';
-//     return this.bizRequest(url, params, type, function(isOk, data) {
-//       if (callback) {
-//         callback(isOk, data);
-//       }
-//     }, "application/json");
-//   }
+
+  deletePatientById(params,callback){
+    var url = this.host + this.method.deletePatientById;
+    var type = 'post';
+    return this.bizRequest(url, params, type, function(isOk, data) {
+      if (callback) {
+        callback(isOk, data);
+      }
+    }, "application/json");
+  }
+
 //   addPatient(params,callback){
 //     var url = this.host + this.method.addPatient;
 //     var type = 'post';
@@ -473,16 +475,16 @@ export default class AllService {
       }
     }, "application/json");
   }
-//
-//   deleteDoctorById(params,callback){
-//     var url = this.host + this.method.deleteDoctorById;
-//     var type = 'post';
-//     return this.bizRequest(url, params, type, function(isOk, data) {
-//       if (callback) {
-//         callback(isOk, data);
-//       }
-//     }, "application/json");
-//   }
+
+  deleteDoctorById(params,callback){
+    var url = this.host + this.method.deleteDoctorById;
+    var type = 'post';
+    return this.bizRequest(url, params, type, function(isOk, data) {
+      if (callback) {
+        callback(isOk, data);
+      }
+    }, "application/json");
+  }
 //
 //   getAllOrder(params,callback){
 //     var url = this.host + this.method.getAllOrder;

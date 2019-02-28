@@ -9,17 +9,17 @@
       <el-col :span="3">
         <el-select v-model="searchKey" placeholder="请选择">
           <el-option label="用户名" value="用户名"></el-option>
-          <!--<el-option label="院系" value="院系"></el-option>-->
+          <el-option label="姓名" value="姓名"></el-option>
         </el-select>
       </el-col>
       <el-col :span="2">
         <el-button @click="resetPatientPage">重置</el-button>
       </el-col>
       <el-col :span="2" :offset="3">
-        <el-button type="primary" @click="showDialog('add')">新增</el-button>
+        <el-button type="primary" @click="showDialog('add')">新增患者</el-button>
       </el-col>
       <el-col :span="3" :offset="1">
-        <el-button type="danger" @click="showDialog('delete')">批量删除</el-button>
+        <el-button type="danger" @click="deletePatientBatch">删除所选患者</el-button>
       </el-col>
       <el-col :span="3" :offset="1">
         <el-upload
@@ -29,7 +29,7 @@
           :before-upload="beforeAvatarUpload"
           multiple
           :show-file-list="false">
-          <el-button type="primary">批量增加</el-button>
+          <el-button type="primary">批量增加患者</el-button>
         </el-upload>
       </el-col>
     </el-row>
@@ -37,41 +37,69 @@
       <el-table
         align="left"
         :data="patientTable"
-        border
         stripe
         highlight-current-row
         style="width: fit-content;margin-top: 40px"
-        empty-text="暂无预约情况"
-        :default-sort="{prop: 'patientId', order: 'ascending'}">
+        empty-text="暂无患者信息"
+        :default-sort="{prop: 'patientId', order: 'ascending'}"
+        @selection-change="handleSelectionChange">
+        <el-table-column
+          type="selection"
+          width="50">
+        </el-table-column>
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" inline class="demo-table-expand">
+              <el-form-item label="患者 ID">
+                <span>{{ props.row.patientId }}</span>
+              </el-form-item>
+              <el-form-item label="患者用户名">
+                <span>{{ props.row.user.userName }}</span>
+              </el-form-item>
+              <el-form-item label="患者姓名">
+                <span>{{ props.row.patientName }}</span>
+              </el-form-item>
+              <el-form-item label="性别">
+                <span>{{ props.row.gender }}</span>
+              </el-form-item>
+              <el-form-item label="身份证号">
+                <span>{{ props.row.identityCard }}</span>
+              </el-form-item>
+              <el-form-item label="年龄">
+                <span>{{ props.row.age }}</span>
+              </el-form-item>
+              <el-form-item label="住址">
+                <span>{{ props.row.location.province+props.row.location.city+props.row.location.district+props.row.location.locationDetail}}</span>
+              </el-form-item>
+              <el-form-item label="手机号">
+                <span>{{ props.row.phone}}</span>
+              </el-form-item>
+              <el-form-item label="邮箱">
+                <span>{{ props.row.email}}</span>
+              </el-form-item>
+              <el-form-item label="余额">
+                <span>{{ props.row.balance.balance}}</span>
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="patientId"
+          label="患者 ID"
+          width="360">
+        </el-table-column>
         <el-table-column
           prop="user.userName"
           label="患者用户名"
           sortable
-          width="150">
+          width="240">
         </el-table-column>
         <el-table-column
           prop="patientName"
           label="患者姓名"
           sortable
-          width="150"
+          width="240"
           :formatter="patientFormatter">
-        </el-table-column>
-        <!--<el-table-column-->
-          <!--prop="departId"-->
-          <!--label="院系"-->
-          <!--sortable-->
-          <!--width="120"-->
-          <!--:formatter="departFormatter">-->
-        <!--</el-table-column>-->
-        <el-table-column
-          prop="phone"
-          label="手机"
-          width="150">
-        </el-table-column>
-        <el-table-column
-          prop="email"
-          label="邮箱"
-          width="150">
         </el-table-column>
         <!--<el-table-column-->
           <!--prop="deleteTimes"-->
@@ -86,7 +114,7 @@
         <!--</el-table-column>-->
         <el-table-column
           label="操作"
-          width="220">
+          width="240">
           <template slot-scope="scope">
             <el-button
               size="small"
@@ -112,47 +140,43 @@
         style="margin-right: 0%;">
       </el-pagination>
     </el-row>
-    <!--批量删除-->
-    <!--<el-dialog :title="'批量删除'" :visible.sync="dialogVisible.deleteVisible">-->
-      <!--<el-form :model="selectDepart" label-width="100px">-->
-        <!--<el-form-item label="指定院系" prop="depart">-->
-          <!--<el-select v-model="selectDepart.depart" placeholder="请选择">-->
-            <!--<el-option-->
-              <!--v-for="item in departTable"-->
-              <!--:key="item.departId"-->
-              <!--:label="item.departName"-->
-              <!--:value="item.departId">-->
-            <!--</el-option>-->
-            <!--<el-option key="-1" label="全部院系" value="-1"></el-option>-->
-          <!--</el-select>-->
-        <!--</el-form-item>-->
-      <!--</el-form>-->
-      <!--<span slot="footer" class="dialog-footer">-->
-          <!--<el-button @click="closeDialog('delete')">取消</el-button>-->
-          <!--<el-button @click="deletePatientBatch" type="primary">删除</el-button>-->
-        <!--</span>-->
-    <!--</el-dialog>-->
     <!--修改信息-->
     <el-dialog :title="'修改信息'" :visible.sync="dialogVisible.modifySingleVisible" width="40%">
-      <el-form :model="patientDetail" label-width="30%">
-        <el-form-item label="患者姓名" prop="patientName">
+      <el-form :model="patientDetail" label-width="25%" align="left">
+        <el-form-item label="患者姓名:" prop="patientName">
           <span>{{patientDetail.patientName}}</span>
         </el-form-item>
-        <!--<el-form-item label="院系" prop="departId">-->
-          <!--<el-select v-model="patientDetail.departId" placeholder="请选择">-->
-            <!--<el-option-->
-              <!--v-for="item in departTable"-->
-              <!--:key="item.departId"-->
-              <!--:label="item.departName"-->
-              <!--:value="item.departId">-->
-            <!--</el-option>-->
-          <!--</el-select>-->
-        <!--</el-form-item>-->
-        <el-form-item label="手机" prop="phone">
-          <el-input v-model="patientDetail.phone" style="width: 60%"></el-input>
+        <el-form-item label="性别:" prop="gender">
+          <el-select v-model="patientDetail.gender" placeholder="请选择" style="width: 75%">
+            <el-option
+              v-for="item in genderOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="patientDetail.email" style="width: 60%"></el-input>
+        <el-form-item label="身份证号:" prop="identityCard">
+          <el-input v-model="patientDetail.identityCard" style="width: 75%"></el-input>
+        </el-form-item>
+        <el-form-item label="年龄:" prop="age">
+          <el-input v-model="patientDetail.age" style="width: 75%"></el-input>
+        </el-form-item>
+        <el-form-item label="手机:" prop="phone">
+          <el-input v-model="patientDetail.phone" style="width: 75%"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱:" prop="email">
+          <el-input v-model="patientDetail.email" style="width: 75%"></el-input>
+        </el-form-item>
+        <el-form-item label="地址:" prop="location">
+          <v-distpicker :province="location.province" :city="location.city" :area="location.area"></v-distpicker>
+          <el-input
+            type="textarea"
+            :rows="2"
+            placeholder="请输入详细地址"
+            style="width: 75%"
+            v-model="location.locationDetail">
+          </el-input>
         </el-form-item>
         <!--<el-form-item label="取消预约次数" prop="deleteTimes">-->
           <!--<el-input v-model="patientDetail.deleteTimes" style="width: 60%"></el-input>-->
@@ -214,22 +238,29 @@
 
 <script>
   import AllService from '../../../services/allservice.js'
+  import VDistpicker from 'v-distpicker'
 
   var allService = new AllService()
   export default {
+    components: { VDistpicker },
     data () {
       return {
         patientTable: [],
+        genderOptions:[{
+          value: '男',
+          label: '男'
+        },{
+          value: '女',
+          label: '女'
+        }],
         patientTableLength: 0,
         dialogVisible: {
-          deleteVisible: false,
           addVisible: false,
           addSingleVisible: false,
           modifySingleVisible: false,
           deleteSingleVisible: false
         },
         patientDetail: {
-
           patientName: '',
           // depart: '',
           phone: '',
@@ -245,15 +276,19 @@
           // deleteTimes: '',
           // deleteDate: '',
         },
-        // selectDepart: {
-        //   depart: '',
-        // },
+        gender:'',
         searchKey: '用户名',
         searchContent: '',
 
-        // departTable: [],
         currentPage: 1,
         pageSize: 10,
+        multipleSelection: [],
+        location: {
+          province: '江苏省',
+          city: '苏州市',
+          area: '姑苏区',
+          locationDetail:'',
+        },
       }
     },
     created () {
@@ -279,37 +314,29 @@
           }
         })
       },
-      // getDepartTable () {
-      //   allService.getAllDepart({}, (isOk, data) => {
-      //     if (isOk) {
-      //       this.departTable = data.data
-      //     }
-      //   })
-      // },
       // 批量删除
-      // deletePatientBatch () {
-      //   this.$confirm('确定要删除吗？', '提示', {
-      //     confirmButtonText: '确定',
-      //     cancelButtonText: '取消',
-      //     type: 'warning'
-      //   }).then(() => {
-      //     if (this.selectDepart.depart == -1) {
-      //       allService.deleteAllPatient({}, (isOk, data) => {
-      //         if (isOk) {
-      //           this.$message.success('删除成功！')
-      //           this.getPatientTable()
-      //         }
-      //       })
-      //     }
-      //     else allService.deletePatientByDepart({departId: this.selectDepart.depart}, (isOk, data) => {
-      //       if (isOk) {
-      //         this.$message.success('删除成功！')
-      //         this.getPatientTable()
-      //       }
-      //     })
-      //     this.closeDialog('delete')
-      //   })
-      // },
+      deletePatientBatch () {
+        this.$confirm('确定要删除吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          console.log(this.multipleSelection)
+          if (this.multipleSelection.length==0){
+            this.$message.warning('未选择用户')
+          }else{
+            for(var i=0;i<this.multipleSelection.length;i++){
+              allService.deletePatientById({patientId: this.multipleSelection[i].patientId}, (isOk, data) => {
+                if (isOk) {
+                  this.getPatientTable()
+                }
+              })
+            }
+            this.$message.success('删除成功！')
+          }
+          this.closeDialog('delete')
+        })
+      },
       addSinglePatient(){
         allService.addPatient(this.patientToAdd,(isOk,data)=>{
           if(data.message!=='error'){
@@ -363,7 +390,6 @@
 
       },
       deleteSinglePatient (row) {
-
         this.$confirm('确定要删除吗？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -376,7 +402,6 @@
             }
           })
         })
-
       },
       resetPatientPage () {
         this.getPatientTable()
@@ -420,10 +445,9 @@
         this.dialogVisible.modifySingleVisible = true
       },
       closeDialog (arg) {
-        // if (arg === 'delete') {
-        //   this.dialogVisible.deleteVisible = false
-        //   this.selectDepart.depart = ''
-        // }
+        if (arg === 'delete') {
+          this.dialogVisible.deleteVisible = false
+        }
         if (arg === 'modify') {
           this.dialogVisible.modifySingleVisible = false
         }
@@ -451,14 +475,6 @@
         second = second < 10 ? ('0' + second) : second
         return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second
       },
-      // departFormatter (row) {
-      //   var temp = row.departId
-      //   for (var i = 0; i < this.departTable.length; i++) {
-      //     if (temp === this.departTable[i].departId) {
-      //       return this.departTable[i].departName
-      //     }
-      //   }
-      // },
       patientFormatter (row) {
         var temp = row.patientId
         for (var i = 0; i < this.patientTable.length; i++) {
@@ -467,13 +483,6 @@
           }
         }
       },
-      // getDepartId (temp) {
-      //   for (var i = 0; i < this.departTable.length; i++) {
-      //     if (temp === this.departTable[i].departName) {
-      //       return this.departTable[i].departId
-      //     }
-      //   }
-      // },
       handleCurrentChange (val) {
         this.currentPage = val
         this.search()
@@ -482,11 +491,48 @@
         this.pageSize = val
         this.search()
       },
+      handleSelectionChange(val) {
+        this.multipleSelection = val;
+      }
     }
   }
 </script>
 
+<style scoped>
+  .divwrap{
+    height: 400px;
+    overflow-y: auto;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+  }
+  .divwrap>>>.distpicker-address-wrapper{
+    color: #999;
+  }
+  .divwrap>>>.address-header{
+    position: fixed;
+    bottom: 400px;
+    width: 100%;
+    background: #000;
+    color:#fff;
+  }
+  .divwrap>>>.address-header ul li{
+    flex-grow: 1;
+    text-align: center;
+  }
+  .divwrap>>>.address-header .active{
+    color: #fff;
+    border-bottom:#666 solid 8px
+  }
+  .divwrap>>>.address-container .active{
+    color: #000;
+  }
+
+</style>
+
 <style>
+
   .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
@@ -750,5 +796,20 @@
   }
 
   }
+  }
+</style>
+
+<style>
+  .demo-table-expand {
+    font-size: 0;
+  }
+  .demo-table-expand label {
+    width: 120px;
+    color: #99a9bf;
+  }
+  .demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 50%;
   }
 </style>

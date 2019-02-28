@@ -21,7 +21,7 @@
         <el-main>
           <div>
             <el-row style="margin-left: 20%; text-align:left; font-size: 36px">
-              欢迎注册共享医生
+              欢迎使用共享医生
             </el-row>
             <el-row style="margin-left: 20%; text-align:left;">
               <el-form :model="form" status-icon :rules="rules2" ref="form" class="demo-ruleForm">
