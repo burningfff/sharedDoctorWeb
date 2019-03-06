@@ -19,7 +19,7 @@ export default class AllService {
       // getDoctorByName: '/doctor/findDoctorByName',
       getAllDepart: '/depart/findAll',
       // getAllMessage: '/message/findAll',
-      updatePatient:'/patient/updateAll',
+      updatePatientAllData:'/patient/updatePatientAllData',
       updateDoctorAllData:'/doctor/updateDoctorAllData',
       // updatePassword:'/user/changePassword',
       // getUserInfo:'/user/findByUserId',
@@ -40,7 +40,6 @@ export default class AllService {
       // addPatient: '/patient/addPatient',
       getAllDoctor: '/doctor/findAllDoctor',
       deleteAllDoctor: '/doctor/deleteAll',
-      deleteDoctorByDepart: '/doctor/deleteByDepart',
       addDoctor: '/doctor/addDoctor',
       deleteDoctorById: '/doctor/deleteDoctor',
       //
@@ -52,6 +51,11 @@ export default class AllService {
       // updateOrderDetail: '/order/update',
       //
       // addDepart: '/depart/addDepart'
+
+      updateLocationByLocationId:'/location/updateLocationByLocationId',
+
+
+      updateQualificationByQualificationId:'/qualification/updateQualificationByQualificationId',
     }
   }
 
@@ -247,6 +251,16 @@ export default class AllService {
 
   updateDoctorAllData(params,callback){
     var url = this.host + this.method.updateDoctorAllData;
+    var type = 'post';
+    return this.bizRequest(url, params, type, function(isOk, data) {
+      if (callback) {
+        callback(isOk, data);
+      }
+    }, "application/json");
+  }
+
+  updatePatientAllData(params,callback){
+    var url = this.host + this.method.updatePatientAllData;
     var type = 'post';
     return this.bizRequest(url, params, type, function(isOk, data) {
       if (callback) {
@@ -455,18 +469,8 @@ export default class AllService {
       }
     }, "application/json");
   }
-  
-  deleteDoctorByDepart(params,callback){
-    var url = this.host + this.method.deleteDoctorByDepart;
-    var type = 'post';
-    return this.bizRequest(url, params, type, function(isOk, data) {
-      if (callback) {
-        callback(isOk, data);
-      }
-    }, "application/json");
-  }
-  
-    addDoctor(params,callback){
+
+  addDoctor(params,callback){
     var url = this.host + this.method.addDoctor;
     var type = 'post';
     return this.bizRequest(url, params, type, function(isOk, data) {
@@ -540,4 +544,26 @@ export default class AllService {
 //       }
 //     }, "application/json");
 //   }
+
+  //更新地址
+  updateLocationByLocationId(params,callback){
+    var url = this.host + this.method.updateLocationByLocationId;
+    var type = 'post';
+    return this.bizRequest(url, params, type, function(isOk, data) {
+      if (callback) {
+        callback(isOk, data);
+      }
+    }, "application/json");
+  }
+
+  //更新认证状态
+  updateQualificationByQualificationId(params,callback){
+    var url = this.host + this.method.updateQualificationByQualificationId;
+    var type = 'post';
+    return this.bizRequest(url, params, type, function(isOk, data) {
+      if (callback) {
+        callback(isOk, data);
+      }
+    }, "application/json");
+  }
 }

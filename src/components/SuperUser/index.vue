@@ -9,8 +9,8 @@
           <span style="font-size: 18px;color: #fff;">Hi! </span>
           <el-dropdown trigger="click">
             <span class="el-dropdown-link userinfo-inner" style="font-size: 18px;color: #fff;"><i
-            class="iconfont icon-user"></i>{{userName}}<i
-            class="iconfont icon-down"></i></span>
+              class="iconfont icon-user"></i>{{userName}}<i
+              class="iconfont icon-down"></i></span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
@@ -60,7 +60,7 @@
       doctor,
       order,
     },
-    data () {
+    data() {
       return {
         // userName: LOCWIN.Cache.get('userInfo').userName,
         userName: 'admin',
@@ -68,10 +68,10 @@
       }
     },
     methods: {
-      handleSelect (index, indexPath) {
+      handleSelect(index, indexPath) {
         this.mode = index
       },
-      logout () {
+      logout() {
         // LOCWIN.Cache.clear()
         this.$router.push('/login')
       },

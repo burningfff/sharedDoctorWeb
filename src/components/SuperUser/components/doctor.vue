@@ -75,7 +75,7 @@
                 <span>{{ props.row.qualification.position.positionName }}</span>
               </el-form-item>
               <el-form-item label="住址">
-                <span>{{ props.row.location.province+props.row.location.city+props.row.location.district+props.row.location.locationDetail}}</span>
+                <span>{{ props.row.location.province+props.row.location.city+props.row.location.area+props.row.location.locationDetail}}</span>
               </el-form-item>
               <el-form-item label="手机号">
                 <span>{{ props.row.phone}}</span>
@@ -148,39 +148,53 @@
     <el-dialog :title="'认证信息'" :visible.sync="dialogVisible.qualifySingleVisible" width="40%">
       <el-form :model="qualificationDetail" label-width="30%">
         <el-form-item label="医护人员姓名：" >
-          <span>{{this.qualificationDetail.doctorName}}</span>
+          <span>{{qualificationDetail.doctorName}}</span>
         </el-form-item>
         <el-form-item label="性别：">
-          <span>{{ this.qualificationDetail.gender }}</span>
+          <span>{{qualificationDetail.gender }}</span>
         </el-form-item>
         <el-form-item label="身份证号：">
-          <span>{{ this.qualificationDetail.identityCard }}</span>
+          <span>{{qualificationDetail.identityCard }}</span>
         </el-form-item>
         <el-form-item label="科室：" >
-          <span>{{this.qualificationDetail.qualification.depart.departName}}</span>
+          <span>{{qualificationDetail.qualification.depart.departName}}</span>
         </el-form-item>
         <el-form-item label="职称：">
-          <span>{{ this.qualificationDetail.qualification.position.positionName }}</span>
+          <span>{{qualificationDetail.qualification.position.positionName }}</span>
         </el-form-item>
         <el-form-item label="所属医院：">
-          <span>{{ this.qualificationDetail.hospitalId }}</span>
+          <span>{{qualificationDetail.hospitalId }}</span>
         </el-form-item>
         <el-form-item label="医护人员资质照片：" prop="imageUrl">
           <span>
             <div class="img-div">
-              <img class="user-img" src="../../../assets/logo.png"/>
+              <viewer :images="images">
+                <img v-for="src in images" :src="src" :key="src" class="img-div">
+              </viewer>
+              <!--<img class="user-img" src="../../../assets/logo.png"/>-->
             </div>
           </span>
         </el-form-item>
+        <el-form-item label="医护人员资质认证：" prop="isConfirmed">
+          <el-select v-model="qualificationDetail.qualification.isConfirmed" placeholder="请选择是否通过认证">
+            <el-option
+            v-for="item in qualificationOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+            :disabled="item.disabled">
+          </el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="updateDoctorAllData" type="primary">通过认证</el-button>
+        <el-button @click="updateQualification" type="primary">确认提交</el-button>
         <el-button @click="closeDialog('qualify')">取消</el-button>
       </span>
     </el-dialog>
     <!--修改信息-->
     <el-dialog :title="'修改信息'" :visible.sync="dialogVisible.modifySingleVisible" width="40%">
-      <el-form :model="doctorDetail" label-width="25%" align="left">
+      <el-form :model="doctorDetail" label-width="25%" align="left" status-icon :rules="rules">
         <el-form-item label="医护人员姓名:" prop="doctorName">
           <span>{{doctorDetail.doctorName}}</span>
         </el-form-item>
@@ -198,28 +212,29 @@
           <el-input v-model="doctorDetail.identityCard" style="width: 75%"></el-input>
         </el-form-item>
         <el-form-item label="年龄:" prop="age">
-          <el-input v-model="doctorDetail.age" style="width: 75%"></el-input>
+          <el-input v-model.number="doctorDetail.age" style="width: 75%"></el-input>
         </el-form-item>
-        <el-form-item label="手机:" prop="phone">
-          <el-input v-model="doctorDetail.phone" style="width: 75%"></el-input>
+        <el-form-item label="手机号:" prop="phone">
+          <el-input v-model.number="doctorDetail.phone" style="width: 75%"></el-input>
         </el-form-item>
         <el-form-item label="邮箱:" prop="email">
           <el-input v-model="doctorDetail.email" style="width: 75%"></el-input>
         </el-form-item>
         <el-form-item label="地址:" prop="location">
-          <v-distpicker :province="location.province" :city="location.city" :area="location.area"></v-distpicker>
+          <v-distpicker :province="doctorDetail.location.province" :city="doctorDetail.location.city" :area="doctorDetail.location.area"
+                        @selected="onSelected"></v-distpicker>
           <el-input
             type="textarea"
             :rows="2"
             placeholder="请输入详细地址"
             style="width: 75%"
-            v-model="location.locationDetail">
+            v-model="doctorDetail.location.locationDetail">
           </el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
           <el-button @click="closeDialog('modify')">取消</el-button>
-          <el-button @click="updatePatientDetail" type="primary">确定</el-button>
+          <el-button @click="updateDoctorAllData" type="primary">确定</el-button>
         </span>
     </el-dialog>
     <!--新增一个-->
@@ -274,13 +289,38 @@
     components: { VDistpicker },
     data () {
       return {
-        multipleSelection: [],
-        location: {
-          province: '江苏省',
-          city: '苏州市',
-          area: '姑苏区',
-          locationDetail:'',
+        rules: {
+          age: [{
+            message: '年龄不能为空'
+          },
+            {
+              type: 'number',
+              message: '年龄必须为数字值'
+            }],
+          gender:[{
+            message: '请选择性别',
+            trigger: 'change'
+          }],
+          identityCard:[{
+            message: '请输入身份证号码',
+            trigger: 'blur'
+          },{
+            pattern:/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/, message: '你的身份证格式不正确'
+          }],
+          email:[{
+            message: '请输入邮箱',
+            trigger: 'blur'
+          },{
+            pattern:/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/, message: '你的邮箱格式不正确'
+          }],
+          phone:[{
+            message: '请输入手机号',
+            trigger: 'blur'
+          },{
+            pattern:/^1[3|4|5|7|8][0-9]\d{8}$/, message: '你的手机号格式不正确'
+          }],
         },
+        multipleSelection: [],
         doctorTable: [],
         doctorTableLength: 0,
         dialogVisible: {
@@ -303,18 +343,26 @@
               positionId:'',
               positionName:'',
             },
+            isConfirmed:'',
           },
           imageUrl:'',
           positionId:'',
           hospitalId:'',
-          isConfirmed:''
         },
         doctorDetail: {
           doctorName: '',
           gender: '',
-          departId: '',
+          age:'',
+          identityCard: '',
           phone: '',
           email: '',
+          locationId:'',
+          location: {
+            province: '江苏省',
+            city: '苏州市',
+            area: '姑苏区',
+            locationDetail:'',
+          },
           // deleteTimes: '',
           // deleteDate: '',
         },
@@ -347,7 +395,24 @@
           value: '女',
           label: '女'
         }],
-
+        qualificationOptions:[{
+          value: 1,
+          label: '认证通过'
+        },{
+          value: 0,
+          label: '认证失败',
+        },{
+          value: 2,
+          label: '未认证',
+          disabled: true
+        }],
+        images: [
+          'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=85690711,3884201894&fm=27&gp=0.jpg',
+          'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=85690711,3884201894&fm=27&gp=0.jpg',
+          // '../../../assets/1.jpg',
+          // '../../../assets/2.jpg',
+          // '../../../assets/3.jpg',
+        ],
       }
     },
     created () {
@@ -374,6 +439,21 @@
         allService.getAllDepart({}, (isOk, data) => {
           if (isOk) {
             this.departTable = data.data
+          }
+        })
+      },
+      updateQualification () {
+        var params = {
+          qualificationId: this.qualificationDetail.qualification.qualificationId,
+          isConfirmed: this.qualificationDetail.qualification.isConfirmed
+        }
+        console.log('params')
+        console.log(params)
+        allService.updateQualificationByQualificationId(params, (isOk, data) => {
+          if (isOk) {
+            this.dialogVisible.qualifySingleVisible = false
+            this.$alert('修改成功')
+            this.getDoctorTable()
           }
         })
       },
@@ -441,15 +521,30 @@
           })
         }
       },
+      onSelected(data){
+        this.doctorDetail.location.province= data.province.value
+        this.doctorDetail.location.city= data.city.value
+        this.doctorDetail.location.area= data.area.value
+      },
       updateDoctorAllData () {
         allService.updateDoctorAllData(this.doctorDetail, (isOk, data) => {
           if (isOk) {
-            this.dialogVisible.modifySingleVisible = false
-            this.$alert('修改成功')
-            this.getDoctorTable()
+            var params={
+              province: this.doctorDetail.location.province,
+              city: this.doctorDetail.location.city,
+              area: this.doctorDetail.location.area,
+              locationDetail: this.doctorDetail.location.locationDetail,
+              locationId:this.doctorDetail.locationId,
+            }
+            allService.updateLocationByLocationId(params, (isOk, data) => {
+              if (isOk) {
+                this.dialogVisible.modifySingleVisible = false
+                this.$alert('修改成功')
+                this.getDoctorTable()
+              }
+            })
           }
         })
-
       },
       deleteSingleDoctor (row) {
 
@@ -520,6 +615,9 @@
       showModifyDialog (row) {
         console.log(row)
         this.doctorDetail = JSON.parse(JSON.stringify(row))//deep copy
+        console.log('doctorDetail')
+        console.log(this.doctorDetail)
+
         this.dialogVisible.modifySingleVisible = true
       },
       closeDialog (arg) {
@@ -563,9 +661,13 @@
       },
       confirmedFormatter(row){
         console.log(row)
-        if(row.qualification.isConfirmed===0){
-          return '未认证';
-        }else return '已认证';
+        if(row.qualification.isConfirmed===2){
+          return '暂未认证';
+        }else if (row.qualification.isConfirmed===1) {
+          return '认证通过';
+        }
+          return '认证失败';
+
       },
       getDepartId (temp) {
         for (var i = 0; i < this.departTable.length; i++) {

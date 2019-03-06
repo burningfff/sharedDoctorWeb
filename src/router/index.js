@@ -6,6 +6,7 @@ const Register = resolve => require(['../components/Register/register.vue'], res
 const HelloWorld = resolve => require(['../components/HelloWorld.vue'], resolve)
 const Login = resolve => require(['../components/Login/login.vue'], resolve)
 const SuperUser = resolve => require(['../components/SuperUser/index.vue'], resolve)
+const Homepage = resolve => require(['../components/Login/homepage.vue'], resolve)
 
 
 Vue.use(Router)
@@ -16,6 +17,14 @@ const routes = [
     path: '/',
     component: HelloWorld,
     name: 'HelloWorld'
+  },
+  {
+    path: '/homepage',
+    component: Homepage,
+    name: 'homepage',
+    meta: {
+      title:'共享医生'
+    }
   },
   {
     path: '/register',

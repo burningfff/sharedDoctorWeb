@@ -69,7 +69,7 @@
                 <span>{{ props.row.age }}</span>
               </el-form-item>
               <el-form-item label="住址">
-                <span>{{ props.row.location.province+props.row.location.city+props.row.location.district+props.row.location.locationDetail}}</span>
+                <span>{{ props.row.location.province+props.row.location.city+props.row.location.area+props.row.location.locationDetail}}</span>
               </el-form-item>
               <el-form-item label="手机号">
                 <span>{{ props.row.phone}}</span>
@@ -142,7 +142,7 @@
     </el-row>
     <!--修改信息-->
     <el-dialog :title="'修改信息'" :visible.sync="dialogVisible.modifySingleVisible" width="40%">
-      <el-form :model="patientDetail" label-width="25%" align="left">
+      <el-form :model="patientDetail" label-width="25%" align="left" status-icon :rules="rules">
         <el-form-item label="患者姓名:" prop="patientName">
           <span>{{patientDetail.patientName}}</span>
         </el-form-item>
@@ -160,7 +160,7 @@
           <el-input v-model="patientDetail.identityCard" style="width: 75%"></el-input>
         </el-form-item>
         <el-form-item label="年龄:" prop="age">
-          <el-input v-model="patientDetail.age" style="width: 75%"></el-input>
+          <el-input  type="age" v-model.number="patientDetail.age" style="width: 75%"></el-input>
         </el-form-item>
         <el-form-item label="手机:" prop="phone">
           <el-input v-model="patientDetail.phone" style="width: 75%"></el-input>
@@ -169,13 +169,14 @@
           <el-input v-model="patientDetail.email" style="width: 75%"></el-input>
         </el-form-item>
         <el-form-item label="地址:" prop="location">
-          <v-distpicker :province="location.province" :city="location.city" :area="location.area"></v-distpicker>
+          <v-distpicker :province="patientDetail.location.province" :city="patientDetail.location.city" :area="patientDetail.location.area"
+                        @selected="onSelected"></v-distpicker>
           <el-input
             type="textarea"
             :rows="2"
             placeholder="请输入详细地址"
             style="width: 75%"
-            v-model="location.locationDetail">
+            v-model="patientDetail.location.locationDetail">
           </el-input>
         </el-form-item>
         <!--<el-form-item label="取消预约次数" prop="deleteTimes">-->
@@ -191,7 +192,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
           <el-button @click="closeDialog('modify')">取消</el-button>
-          <el-button @click="updatePatientDetail" type="primary">确定</el-button>
+          <el-button @click="updatePatientAllData" type="primary">确定</el-button>
         </span>
     </el-dialog>
     <!--新增一个-->
@@ -245,6 +246,42 @@
     components: { VDistpicker },
     data () {
       return {
+        rules: {
+         age: [{
+            required: true,
+            message: '年龄不能为空'
+          },
+          {
+            type: 'number',
+            message: '年龄必须为数字值'
+          }],
+          gender:[{
+            required: true,
+            message: '请选择性别',
+            trigger: 'change'
+          }],
+          identityCard:[{
+            required: true,
+            message: '请输入身份证号码',
+            trigger: 'blur'
+          },{
+            pattern:/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/, message: '你的身份证格式不正确'
+          }],
+          email:[{
+            required: true,
+            message: '请输入邮箱',
+            trigger: 'blur'
+          },{
+            pattern:/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/, message: '你的邮箱格式不正确'
+          }],
+          phone:[{
+            required: true,
+            message: '请输入手机号',
+            trigger: 'blur'
+          },{
+            pattern:/^1[3|4|5|7|8][0-9]\d{8}$/, message: '你的手机号格式不正确'
+          }],
+        },
         patientTable: [],
         genderOptions:[{
           value: '男',
@@ -261,10 +298,19 @@
           deleteSingleVisible: false
         },
         patientDetail: {
-          patientName: '',
-          // depart: '',
-          phone: '',
-          email: '',
+            patientName: '',
+            gender: '',
+            age:'',
+            identityCard: '',
+            phone: '',
+            email: '',
+            locationId:'',
+            location: {
+              province: '江苏省',
+              city: '苏州市',
+              area: '姑苏区',
+              locationDetail:'',
+            },
           // deleteTimes: '',
           // deleteDate: '',
         },
@@ -283,12 +329,6 @@
         currentPage: 1,
         pageSize: 10,
         multipleSelection: [],
-        location: {
-          province: '江苏省',
-          city: '苏州市',
-          area: '姑苏区',
-          locationDetail:'',
-        },
       }
     },
     created () {
@@ -379,12 +419,30 @@
         //   })
         // }
       },
-      updatePatientDetail () {
-        allService.updatePatient(this.patientDetail, (isOk, data) => {
+      onSelected(data){
+        this.patientDetail.location.province= data.province.value
+        this.patientDetail.location.city= data.city.value
+        this.patientDetail.location.area= data.area.value
+      },
+      updatePatientAllData () {
+        console.log(this.patientDetail)
+        allService.updatePatientAllData(this.patientDetail, (isOk, data) => {
           if (isOk) {
-            this.dialogVisible.modifySingleVisible = false
-            this.$alert('修改成功')
-            this.getPatientTable()
+            var params={
+              province: this.patientDetail.location.province,
+              city: this.patientDetail.location.city,
+              area: this.patientDetail.location.area,
+              locationDetail: this.patientDetail.location.locationDetail,
+              locationId:this.patientDetail.locationId,
+            }
+            console.log(params)
+            allService.updateLocationByLocationId(params, (isOk, data) => {
+              if (isOk) {
+                this.dialogVisible.modifySingleVisible = false
+                this.$alert('修改成功')
+                this.getPatientTable()
+              }
+            })
           }
         })
 
@@ -442,6 +500,8 @@
       showModifyDialog (row) {
         console.log(row)
         this.patientDetail = JSON.parse(JSON.stringify(row))//deep copy
+        console.log('this.patientDetail')
+        console.log(this.patientDetail)
         this.dialogVisible.modifySingleVisible = true
       },
       closeDialog (arg) {
