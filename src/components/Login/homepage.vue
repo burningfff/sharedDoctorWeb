@@ -42,28 +42,60 @@
 
 
     <el-row type="flex" align="middle" style="margin-top: 30px;">
-      <el-col :span="6" :offset="1" style="text-align: center">
-        <el-menu default-active="1-4-1" @open="handleOpen" @close="handleClose" :collapse="true"
+      <el-col :span="6" :offset="1" style="text-align: left">
+        <el-menu default-active="1" @open="handleOpen" @close="handleClose" :collapse="true"
                  background-color="#545c64"
                  text-color="#fff"
                  active-text-color="#ffd04b"
                  style="width: 200px">
-          <span>
+          <i class="el-icon-menu" style="color: #ffffff;size: 18px;font-size:18px;margin: 10px"> 快速找医生</i>
+          <i class="el-icon-departkeshi" style="color: #cdcdcd;size: 18px;margin: 10px"> 科室</i>
 
-          </span>
-          <el-submenu index="1" style="width: 200px">
+          <el-submenu index="1" style="width: 200px;">
             <template slot="title">
-              <i class="el-icon-departkeshi"></i>
-              外科 心胸外科 手外科
-
-              <!--<span>{外科 心胸外科 手外科}</span>-->
-              <!--<span slot="title">外科 心胸外科 手外科</span>-->
+              外科 心胸外科 手外科 <i class="el-icon-arrow-right" style="color: #cdcdcd;size: 18px;margin: 10px"></i>
             </template>
-            <el-menu-item-group >
-              <span slot="title">分组一</span>
-              <el-menu-item index="1-1">选项1</el-menu-item>
-              <el-menu-item index="1-2">选项2</el-menu-item>
-            </el-menu-item-group>
+            <!--<el-menu-item-group>-->
+            <el-menu-item index="1-1" style="width:800px">
+              <div>
+                <el-row>
+                  <el-col :span="2">
+                    <div class="grid-content ">心胸外科</div>
+                  </el-col>
+                  <el-col :offset="2" :span="2">
+                    <div class="grid-content ">
+                      <el-button type="text">woqu</el-button>
+                    </div>
+                  </el-col>
+                  <el-col :span="2">
+                    <div class="grid-content ">
+                      <el-button type="text">woqu</el-button>
+                    </div>
+                  </el-col>
+                  <el-col :span="2">
+                    <div class="grid-content ">
+                      <el-button type="text">woqu</el-button>
+                    </div>
+                  </el-col>
+                  <el-col :span="2">
+                    <div class="grid-content ">
+                      <el-button type="text">woqu</el-button>
+                    </div>
+                  </el-col>
+                  <el-col :span="2">
+                    <div class="grid-content ">
+                      <el-button type="text">woqu</el-button>
+                    </div>
+                  </el-col>
+                  <el-col :span="2">
+                    <div class="grid-content ">
+                      <el-button type="text">所有疾病</el-button>
+                    </div>
+                  </el-col>
+                </el-row>
+              </div>
+            </el-menu-item>
+            <!--</el-menu-item-group>-->
             <el-menu-item-group title="分组2">
               <el-menu-item index="1-3">选项3</el-menu-item>
             </el-menu-item-group>
@@ -364,7 +396,7 @@
   .el-submenu__title {
     font-size: 14px;
     color: #303133;
-    padding: 0 60px;
+    padding: 0 0px;
     cursor: pointer;
     -webkit-transition: border-color .3s,background-color .3s,color .3s;
     transition: border-color .3s,background-color .3s,color .3s;
@@ -542,8 +574,8 @@
   }
 
   .el-menu {
-    border-right: solid 60px #74e621;
-    border-right-width: 60px;
+    border-right: solid 0px #74e621;
+    border-right-width: 0px;
     border-right-style: solid;
     border-right-color: rgb(230, 31, 45);
     list-style: none;
