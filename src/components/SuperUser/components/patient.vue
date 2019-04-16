@@ -310,6 +310,7 @@
               city: '苏州市',
               area: '姑苏区',
               locationDetail:'',
+              areaCode: ''
             },
           // deleteTimes: '',
           // deleteDate: '',
@@ -423,6 +424,7 @@
         this.patientDetail.location.province= data.province.value
         this.patientDetail.location.city= data.city.value
         this.patientDetail.location.area= data.area.value
+        this.patientDetail.location.areaCode = data.area.code
       },
       updatePatientAllData () {
         console.log(this.patientDetail)
@@ -433,6 +435,7 @@
               city: this.patientDetail.location.city,
               area: this.patientDetail.location.area,
               locationDetail: this.patientDetail.location.locationDetail,
+              areaCode: this.patientDetail.location.areaCode,
               locationId:this.patientDetail.locationId,
             }
             console.log(params)

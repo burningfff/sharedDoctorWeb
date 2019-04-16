@@ -69,7 +69,7 @@
                 <span>{{ props.row.age }}</span>
               </el-form-item>
               <el-form-item label="科室">
-                <span>{{ props.row.qualification.depart.departName }}</span>
+                <span>{{ props.row.depart.departName }}</span>
               </el-form-item>
               <el-form-item label="职称">
                 <span>{{ props.row.qualification.position.positionName }}</span>
@@ -157,7 +157,7 @@
           <span>{{qualificationDetail.identityCard }}</span>
         </el-form-item>
         <el-form-item label="科室：" >
-          <span>{{qualificationDetail.qualification.depart.departName}}</span>
+          <span>{{doctorDetail.depart.departName}}</span>
         </el-form-item>
         <el-form-item label="职称：">
           <span>{{qualificationDetail.qualification.position.positionName }}</span>
@@ -335,10 +335,7 @@
           qualificationId:'',
           // doctorName: '',
           qualification:{
-            depart:{
-              departId:'',
-              departName:'',
-            },
+
             position:{
               positionId:'',
               positionName:'',
@@ -362,6 +359,12 @@
             city: '苏州市',
             area: '姑苏区',
             locationDetail:'',
+            areaCode: ''
+          },
+          departId: '',
+          depart: {
+            departId: '',
+            departName: '',
           },
           // deleteTimes: '',
           // deleteDate: '',
@@ -525,6 +528,7 @@
         this.doctorDetail.location.province= data.province.value
         this.doctorDetail.location.city= data.city.value
         this.doctorDetail.location.area= data.area.value
+        this.doctorDetail.location.areaCode = data.area.code
       },
       updateDoctorAllData () {
         allService.updateDoctorAllData(this.doctorDetail, (isOk, data) => {
@@ -534,6 +538,7 @@
               city: this.doctorDetail.location.city,
               area: this.doctorDetail.location.area,
               locationDetail: this.doctorDetail.location.locationDetail,
+              areaCode: this.doctorDetail.location.areaCode,
               locationId:this.doctorDetail.locationId,
             }
             allService.updateLocationByLocationId(params, (isOk, data) => {
@@ -609,7 +614,7 @@
         this.qualificationDetail = JSON.parse(JSON.stringify(row))//deep copy
         console.log('qualification')
         console.log(this.qualificationDetail)
-        console.log(this.qualificationDetail.qualification.depart.departName)
+        console.log(this.doctorDetail.depart.departName)
         this.dialogVisible.qualifySingleVisible = true
       },
       showModifyDialog (row) {
@@ -665,9 +670,9 @@
           return '暂未认证';
         }else if (row.qualification.isConfirmed===1) {
           return '认证通过';
-        }
+        } else {
           return '认证失败';
-
+        }
       },
       getDepartId (temp) {
         for (var i = 0; i < this.departTable.length; i++) {

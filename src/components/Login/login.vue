@@ -1,6 +1,6 @@
 <template>
-  <div style="margin-top: 0px">
-    <el-container style="margin: 0px">
+  <div style="margin-top: 0px;">
+    <el-container style="margin: 0px;height: 100vh">
       <el-aside width="32%">
         <div>
           <el-row>
@@ -21,7 +21,7 @@
         <el-main>
           <div>
             <el-row style="margin-left: 20%; text-align:left; font-size: 36px">
-              欢迎使用共享医生
+              欢迎使用共享医生管理系统
             </el-row>
             <el-row style="margin-left: 20%; text-align:left;">
               <el-form :model="form" status-icon :rules="rules2" ref="form" class="demo-ruleForm">
@@ -90,23 +90,10 @@
               this.$message.error(data.data);
             } else {
               console.log(data.data);
-              // LOCWIN.Cache.set("userName", params.userName);
-              // LOCWIN.Cache.set("userInfo", data.data);
-              // LOCWIN.Cache.set("userPass", params.password);
               if (data.data === 'root') {
                 this.$message.success("登录成功！")
-                // this.$router.push('/SU/index');
+                this.$router.push('/SuperUser/index');
               }
-              if ("patientId" in data.data) {
-                this.$message.success("登录成功！")
-                this.$router.push('/login')
-                // this.$router.push('/student/index');
-              }
-              if ("doctorId" in data.data) {
-                this.$message.success("登录成功！")
-                // this.$router.push('/teacher/index');
-              }
-              this.$message.success("登录成功！");
             }
           } else {
             this.$alert("登录失败！")

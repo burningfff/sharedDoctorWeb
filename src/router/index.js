@@ -15,8 +15,8 @@ Vue.use(Vuex)
 const routes = [
   {
     path: '/',
-    component: HelloWorld,
-    name: 'HelloWorld'
+    component: Login,
+    name: 'login'
   },
   {
     path: '/homepage',
