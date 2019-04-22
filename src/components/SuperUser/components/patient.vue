@@ -77,9 +77,9 @@
               <el-form-item label="邮箱">
                 <span>{{ props.row.email}}</span>
               </el-form-item>
-              <el-form-item label="余额">
-                <span>{{ props.row.balance.balance}}</span>
-              </el-form-item>
+              <!--<el-form-item label="余额">-->
+              <!--<span>{{ props.row.balance.balance}}</span>-->
+              <!--</el-form-item>-->
             </el-form>
           </template>
         </el-table-column>
