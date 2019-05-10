@@ -1,16 +1,10 @@
 <template>
   <div>
     <el-row>
-      <el-col :span="5">
-        <el-input placeholder="请输入内容" v-model="searchContent" class="input-with-select">
+      <el-col :span="8">
+        <el-input placeholder="请输入医护人员姓名" v-model="searchContent" class="input-with-select">
           <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
         </el-input>
-      </el-col>
-      <el-col :span="3">
-        <el-select v-model="searchKey" placeholder="请选择">
-          <el-option label="用户名" value="用户名"></el-option>
-          <el-option label="科室" value="科室"></el-option>
-        </el-select>
       </el-col>
       <el-col :span="2">
         <el-button @click="resetDoctorPage">重置</el-button>
@@ -381,7 +375,6 @@
         selectDepart: {
           departId: '',
         },
-        searchKey: '用户名',
         searchContent: '',
         depart:{
           departId:'',
@@ -496,31 +489,25 @@
       search () {
         if(this.searchContent===null||this.searchContent===''){
           this.getDoctorTable()
-        }
-        else if (this.searchKey === '用户名') {
-          allService.getDoctorDetailByName({doctorName: this.searchContent}, (isOk, data) => {
-            if (data.data != null) {
-              this.doctorTable = []
-              this.doctorTable.push(data.data)
-              this.doctorTableLength = 1
-            } else {
-              this.doctorTable = []
-              this.doctorTableLength = 0
-            }
-          })
-        }
-        else if (this.searchKey === '科室') {
+        } else {
           var params = {
-            departId: this.getDepartId(this.searchContent),
-            pageNum: this.currentPage,
+            doctorName: this.searchContent,
+            pageNum: this.currentPage - 1,
             pageSize: this.pageSize
           }
-          console.log(params)
-          allService.searchDoctorByDepart(params, (isOk, data) => {
+          allService.findAllDoctorByDoctorName(params, (isOk, data) => {
             if (isOk) {
-              this.doctorTable = data.data
-              this.doctorTableLength = data.total
+              this.doctorTable = data.data.content
+              this.doctorTableLength = data.data.totalElements
             }
+            // if (data.data != null) {
+            //   this.doctorTable = []
+            //   this.doctorTable.push(data.data)
+            //   this.doctorTableLength = 1
+            // } else {
+            //   this.doctorTable = []
+            //   this.doctorTableLength = 0
+            // }
           })
         }
       },

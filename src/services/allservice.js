@@ -24,7 +24,7 @@ export default class AllService {
       // updatePassword:'/user/changePassword',
       // getUserInfo:'/user/findByUserId',
       getPatientDetailByName: '/patient/findPatientByName',
-      getDoctorDetailByName: '/doctor/findDoctorByName',
+      getDoctorDetailByName: '/doctor/findAllByDoctorName',
       // updatePatientImage: '/patient/updateImage',
       // updateDoctorImage: '/doctor/updateImage',
       // getPatientDetailById: '/patient/findPatientById',
@@ -33,12 +33,14 @@ export default class AllService {
       searchDoctorByDepart: '/doctor/findDoctorByDepart',
       // checkUserName: '/user/checkUserName',
       getAllPatient: '/patient/findAllPatient',
+      findAllPatientByPatientName: '/patient/findAllPatientByPatientName',
       // deletePatientByDepart: '/patient/deleteByDepart',
       // deleteAllPatient: '/patient/deleteAll',
       // searchPatientByDepart: '/patient/findPatientByDepart',
       deletePatientById: '/patient/deletePatient',
       // addPatient: '/patient/addPatient',
       getAllDoctor: '/doctor/findAllDoctor',
+      findAllDoctorByDoctorName: '/doctor/findAllDoctorByDoctorName',
       deleteAllDoctor: '/doctor/deleteAll',
       addDoctor: '/doctor/addDoctor',
       deleteDoctorById: '/doctor/deleteDoctor',
@@ -63,7 +65,7 @@ export default class AllService {
     var result
     $.ajax({
       url: url,
-      type: type || 'GET',
+      type: type || 'POST',
       contentType: contentType === undefined ? 'application/x-www-form-urlencoded' : contentType,
       data: contentType == 'application/json' ? JSON.stringify(sendData) : sendData,
       timeout: 60000,
@@ -97,7 +99,7 @@ export default class AllService {
       if (!err) {
         if (data) {
           //成功，更新token
-          if (data.status == true || data.status == '200') {
+          if (true) {
             result = data
             data.status = true
           }
@@ -402,6 +404,16 @@ export default class AllService {
     }, "application/json");
   }
 
+  findAllPatientByPatientName(params, callback) {
+    var url = this.host + this.method.findAllPatientByPatientName;
+    var type = 'post';
+    return this.bizRequest(url, params, type, function (isOk, data) {
+      if (callback) {
+        callback(isOk, data);
+      }
+    }, "application/json");
+  }
+
 //   deletePatientByDepart(params,callback){
 //     var url = this.host + this.method.deletePatientByDepart;
 //     var type = 'post';
@@ -454,6 +466,16 @@ export default class AllService {
     var url = this.host + this.method.getAllDoctor;
     var type = 'post';
     return this.bizRequest(url, params, type, function(isOk, data) {
+      if (callback) {
+        callback(isOk, data);
+      }
+    }, "application/json");
+  }
+
+  findAllDoctorByDoctorName(params, callback) {
+    var url = this.host + this.method.findAllDoctorByDoctorName;
+    var type = 'post';
+    return this.bizRequest(url, params, type, function (isOk, data) {
       if (callback) {
         callback(isOk, data);
       }

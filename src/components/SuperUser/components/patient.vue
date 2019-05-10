@@ -1,16 +1,10 @@
 <template>
   <div>
     <el-row>
-      <el-col :span="5">
-        <el-input placeholder="请输入内容" v-model="searchContent" class="input-with-select">
+      <el-col :span="8">
+        <el-input placeholder="请输入患者姓名" v-model="searchContent" class="input-with-select">
           <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
         </el-input>
-      </el-col>
-      <el-col :span="3">
-        <el-select v-model="searchKey" placeholder="请选择">
-          <el-option label="用户名" value="用户名"></el-option>
-          <el-option label="姓名" value="姓名"></el-option>
-        </el-select>
       </el-col>
       <el-col :span="2">
         <el-button @click="resetPatientPage">重置</el-button>
@@ -324,7 +318,6 @@
           // deleteDate: '',
         },
         gender:'',
-        searchKey: '用户名',
         searchContent: '',
 
         currentPage: 1,
@@ -392,33 +385,27 @@
       search () {
         if(this.searchContent===null||this.searchContent===''){
           this.getPatientTable()
-        }
-        else if (this.searchKey === '用户名') {
-          allService.getPatientDetailBN({patientName: this.searchContent}, (isOk, data) => {
-            if (data.data != null) {
-              this.patientTable = []
-              this.patientTable.push(data.data)
-              this.patientTableLength = 1
-            } else {
-              this.patientTable = []
-              this.patientTableLength = 0
+        } else {
+          var params = {
+            pageNum: this.currentPage - 1,
+            pageSize: this.pageSize,
+            patientName: this.searchContent
+          }
+          allService.findAllPatientByPatientName(params, (isOk, data) => {
+            if (isOk) {
+              this.patientTable = data.data.content
+              this.patientTableLength = data.data.totalElements
             }
+            // if (data.data != null) {
+            //   this.patientTable = []
+            //   this.patientTable.push(data.data)
+            //   this.patientTableLength = 1
+            // } else {
+            //   this.patientTable = []
+            //   this.patientTableLength = 0
+            // }
           })
         }
-        // else if (this.searchKey === '院系') {
-        //   var params = {
-        //     departId: this.getDepartId(this.searchContent),
-        //     pageNum: this.currentPage,
-        //     pageSize: this.pageSize
-        //   }
-        //   console.log(params)
-        //   allService.searchPatientByDepart(params, (isOk, data) => {
-        //     if (isOk) {
-        //       this.patientTable = data.data
-        //       this.patientTableLength = data.total
-        //     }
-        //   })
-        // }
       },
       onSelected(data){
         this.patientDetail.location.province= data.province.value
@@ -466,7 +453,6 @@
       },
       resetPatientPage () {
         this.getPatientTable()
-        this.searchKey = '用户名'
         this.searchContent = ''
       },
       handleAvatarSuccess (res, file) {
