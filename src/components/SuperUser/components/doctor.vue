@@ -9,10 +9,10 @@
       <el-col :span="2">
         <el-button @click="resetDoctorPage">重置</el-button>
       </el-col>
-      <el-col :span="2" :offset="3">
-        <el-button type="primary" @click="showDialog('add')">新增医护人员</el-button>
-      </el-col>
-      <el-col :span="3" :offset="1">
+      <!--<el-col :span="2" :offset="3">-->
+      <!--<el-button type="primary" @click="showDialog('add')">新增医护人员</el-button>-->
+      <!--</el-col>-->
+      <el-col :span="3" :offset="6">
         <el-button type="danger" @click="deleteDoctorBatch">删除所选医护人员</el-button>
       </el-col>
       <el-col :span="3" :offset="1">
@@ -63,13 +63,14 @@
                 <span>{{ props.row.age }}</span>
               </el-form-item>
               <el-form-item label="科室">
-                <span>{{ props.row.depart.departName }}</span>
+                <span v-if="props.row.depart!=null">{{ props.row.depart.departName }}</span>
               </el-form-item>
               <el-form-item label="职称">
-                <span>{{ props.row.qualification.position.positionName }}</span>
+                <span
+                  v-if="props.row.qualification.position!=null">{{ props.row.qualification.position.positionName }}</span>
               </el-form-item>
               <el-form-item label="住址">
-                <span>{{ props.row.location.province+props.row.location.city+props.row.location.area+props.row.location.locationDetail}}</span>
+                <span v-if="props.row.location.province!=null">{{ props.row.location.province+props.row.location.city+props.row.location.area+props.row.location.locationDetail}}</span>
               </el-form-item>
               <el-form-item label="手机号">
                 <span>{{ props.row.phone}}</span>
@@ -142,32 +143,42 @@
     <el-dialog :title="'认证信息'" :visible.sync="dialogVisible.qualifySingleVisible" width="40%">
       <el-form :model="qualificationDetail" label-width="30%">
         <el-form-item label="医护人员姓名：" >
-          <span>{{qualificationDetail.doctorName}}</span>
+          <span
+            v-if="qualificationDetail.doctorName!=null">{{qualificationDetail.doctorName}}</span>
         </el-form-item>
         <el-form-item label="性别：">
-          <span>{{qualificationDetail.gender }}</span>
+          <span
+            v-if="qualificationDetail.gender!=null">{{qualificationDetail.gender }}</span>
         </el-form-item>
         <el-form-item label="身份证号：">
-          <span>{{qualificationDetail.identityCard }}</span>
+          <span
+            v-if="qualificationDetail.identityCard!=null">{{qualificationDetail.identityCard }}</span>
         </el-form-item>
         <el-form-item label="科室：" >
-          <span>{{doctorDetail.depart.departName}}</span>
+          <span
+            v-if="qualificationDetail.depart!=null">{{qualificationDetail.depart.departName}}</span>
         </el-form-item>
         <el-form-item label="职称：">
-          <span>{{qualificationDetail.qualification.position.positionName }}</span>
+          <span
+            v-if="qualificationDetail.qualification.position!=null">{{qualificationDetail.qualification.position.positionName }}</span>
         </el-form-item>
         <el-form-item label="所属医院：">
-          <span>{{qualificationDetail.hospitalId }}</span>
+          <span
+            v-if="qualificationDetail.qualification.hospital!=null">{{qualificationDetail.qualification.hospital.hospitalName }}</span>
         </el-form-item>
         <el-form-item label="医护人员资质照片：" prop="imageUrl">
-          <span>
-            <div class="img-div">
-              <viewer :images="images">
-                <img v-for="src in images" :src="src" :key="src" class="img-div">
+          <!--<span>-->
+          <div
+            v-if="qualificationDetail.qualification.imageUrl!=null"
+            class="img-div">
+            <viewer :images="qualificationDetail.qualification.imageUrl.split(',')">
+              <img
+                style="width: 30%;height: 30%;padding: 5px;"
+                v-for="src in qualificationDetail.qualification.imageUrl.split(',')" :src="src" :key="src">
               </viewer>
               <!--<img class="user-img" src="../../../assets/logo.png"/>-->
             </div>
-          </span>
+          <!--</span>-->
         </el-form-item>
         <el-form-item label="医护人员资质认证：" prop="isConfirmed">
           <el-select v-model="qualificationDetail.qualification.isConfirmed" placeholder="请选择是否通过认证">
@@ -232,33 +243,33 @@
         </span>
     </el-dialog>
     <!--新增一个-->
-    <el-dialog :title="'新增医护人员'" :visible.sync="dialogVisible.addSingleVisible" width="40%">
-      <el-form :model="doctorToAdd" label-width="30%">
-        <el-form-item label="医护人员姓名" prop="doctorName">
-          <el-input v-model="doctorToAdd.doctorName" style="width: 60%"></el-input>
-        </el-form-item>
-        <el-form-item label="科室" prop="departId">
-          <el-select v-model="doctorToAdd.departId" placeholder="请选择">
-            <el-option
-              v-for="item in departTable"
-              :key="item.departId"
-              :label="item.departName"
-              :value="item.departId">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="手机" prop="phone">
-          <el-input v-model="doctorToAdd.phone" style="width: 60%"></el-input>
-        </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="doctorToAdd.email" style="width: 60%"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-          <el-button @click="closeDialog('add')">取消</el-button>
-          <el-button @click="addSingleDoctor" type="primary">确定</el-button>
-      </span>
-    </el-dialog>
+    <!--<el-dialog :title="'新增医护人员'" :visible.sync="dialogVisible.addSingleVisible" width="40%">-->
+    <!--<el-form :model="doctorToAdd" label-width="30%">-->
+    <!--<el-form-item label="医护人员姓名" prop="doctorName">-->
+    <!--<el-input v-model="doctorToAdd.doctorName" style="width: 60%"></el-input>-->
+    <!--</el-form-item>-->
+    <!--<el-form-item label="科室" prop="departId">-->
+    <!--<el-select v-model="doctorToAdd.departId" placeholder="请选择">-->
+    <!--<el-option-->
+    <!--v-for="item in departTable"-->
+    <!--:key="item.departId"-->
+    <!--:label="item.departName"-->
+    <!--:value="item.departId">-->
+    <!--</el-option>-->
+    <!--</el-select>-->
+    <!--</el-form-item>-->
+    <!--<el-form-item label="手机" prop="phone">-->
+    <!--<el-input v-model="doctorToAdd.phone" style="width: 60%"></el-input>-->
+    <!--</el-form-item>-->
+    <!--<el-form-item label="邮箱" prop="email">-->
+    <!--<el-input v-model="doctorToAdd.email" style="width: 60%"></el-input>-->
+    <!--</el-form-item>-->
+    <!--</el-form>-->
+    <!--<span slot="footer" class="dialog-footer">-->
+    <!--<el-button @click="closeDialog('add')">取消</el-button>-->
+    <!--<el-button @click="addSingleDoctor" type="primary">确定</el-button>-->
+    <!--</span>-->
+    <!--</el-dialog>-->
     <!--timeSlot-->
     <!--<el-dialog :title="'时间段详情'" :visible.sync="dialogVisible.timeSlotVisible" width="40%">-->
       <!--<el-table :data="timeSlotList" border>-->
@@ -330,15 +341,25 @@
           // doctorName: '',
           qualification:{
 
+            hospitalId: '',
             position:{
               positionId:'',
               positionName:'',
             },
+            hospital: {
+              hospitalId: '',
+              hospitalName: '',
+            },
             isConfirmed:'',
+
+          },
+          departId: '',
+          depart: {
+            departId: '',
+            departName: '',
           },
           imageUrl:'',
           positionId:'',
-          hospitalId:'',
         },
         doctorDetail: {
           doctorName: '',
@@ -402,13 +423,6 @@
           label: '未认证',
           disabled: true
         }],
-        images: [
-          'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=85690711,3884201894&fm=27&gp=0.jpg',
-          'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=85690711,3884201894&fm=27&gp=0.jpg',
-          // '../../../assets/1.jpg',
-          // '../../../assets/2.jpg',
-          // '../../../assets/3.jpg',
-        ],
       }
     },
     created () {
@@ -783,7 +797,11 @@
   .img-div {
     width: 100%;
     height: 100%;
+    text-align: left;
+    /*display: table-cell;*/
+    vertical-align: middle;
 
+  /*text-align: center;*/
   .user-img {
     width: 100%;
     height: 100%;
@@ -946,6 +964,45 @@
     box-sizing: border-box;
   }
 
+  }
+  }
+</style>
+
+<style lang="scss" scoped>
+  .imgUpload {
+    width: 100%;
+    background: #ffffff;
+    font-size: 14px;
+    overflow-x: hidden;
+
+  .dynamic-imgs {
+    box-sizing: border-box;
+    min-height: 152px;
+    width: 100%;
+    background-color: #ffffff;
+    padding: 12px 0px;
+    margin-bottom: 6.5px;
+
+  .img-title {
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #666666;
+    letter-spacing: 0.16px;
+  }
+
+  .table-list {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+
+  .img-add {
+    width: 26vw;
+    height: 26vw;
+    margin-right: 2vw;
+    margin-bottom: 2vw;
+  }
+
+  }
   }
   }
 </style>

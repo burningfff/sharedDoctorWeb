@@ -28,7 +28,7 @@
       active-text-color="#ffd04b">
       <el-menu-item index="1">普通患者信息管理</el-menu-item>
       <el-menu-item index="2">医护人员信息管理</el-menu-item>
-      <el-menu-item index="3">订单及医院信息管理</el-menu-item>
+      <!--<el-menu-item index="3">订单及医院信息管理</el-menu-item>-->
     </el-menu>
 
     <div style="margin-left: 300px;margin-top: 5%" v-show="mode==1">
@@ -39,9 +39,9 @@
       <doctor></doctor>
     </div>
 
-    <div style="margin-left: 300px;margin-top: 5%" v-show="mode==3">
-      <order></order>
-    </div>
+    <!--<div style="margin-left: 300px;margin-top: 5%" v-show="mode==3">-->
+    <!--<order></order>-->
+    <!--</div>-->
 
   </div>
 
@@ -58,12 +58,11 @@
     components: {
       patient,
       doctor,
-      order,
+      // order,
     },
     data() {
       return {
-        // userName: LOCWIN.Cache.get('userInfo').userName,
-        userName: 'admin',
+        userName: 'admin1',
         mode: 1,
       }
     },
@@ -191,6 +190,7 @@
     position: fixed;
     top: 0px;
     bottom: 0px;
+    left: 0px;
     width: 100%;
     height: fit-content;
     z-index: 1002;

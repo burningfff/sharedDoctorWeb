@@ -9,10 +9,10 @@
       <el-col :span="2">
         <el-button @click="resetPatientPage">重置</el-button>
       </el-col>
-      <el-col :span="2" :offset="3">
-        <el-button type="primary" @click="showDialog('add')">新增患者</el-button>
-      </el-col>
-      <el-col :span="3" :offset="1">
+      <!--<el-col :span="2" :offset="3">-->
+      <!--<el-button type="primary" @click="showDialog('add')">新增患者</el-button>-->
+      <!--</el-col>-->
+      <el-col :span="3" :offset="6">
         <el-button type="danger" @click="deletePatientBatch">删除所选患者</el-button>
       </el-col>
       <el-col :span="3" :offset="1">
@@ -63,7 +63,7 @@
                 <span>{{ props.row.age }}</span>
               </el-form-item>
               <el-form-item label="住址">
-                <span>{{ props.row.location.province+props.row.location.city+props.row.location.area+props.row.location.locationDetail}}</span>
+                <span v-if="props.row.location.province!=null">{{ props.row.location.province+props.row.location.city+props.row.location.area+props.row.location.locationDetail}}</span>
               </el-form-item>
               <el-form-item label="手机号">
                 <span>{{ props.row.phone}}</span>
@@ -372,6 +372,7 @@
         })
       },
       addSinglePatient(){
+
         allService.addPatient(this.patientToAdd,(isOk,data)=>{
           if(data.message!=='error'){
             this.$message.success("新增成功")
