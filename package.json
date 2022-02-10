@@ -15,7 +15,7 @@
   "dependencies": {
     "element-ui": "^2.5.4",
     "jquery": "^3.3.1",
-    "node-sass": "^4.11.0",
+    "node-sass": "^7.0.0",
     "v-distpicker": "^1.1.0",
     "v-viewer": "^1.4.0",
     "vue": "^2.5.2",
